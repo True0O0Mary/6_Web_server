@@ -1,31 +1,66 @@
 import socket
+import os
+import threading
+from settings import PORT, WORKING_DIR, REQUEST_SIZE
+from check import code_request
+# WORKING_DIR = os.getcwd()
+# PORT = 80
 
-sock = socket.socket()
+server = socket.socket()
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server.bind(('', PORT))
+server.listen(5)
 
-try:
-    sock.bind(('', 80))
-    print("Using port 80")
-except OSError:
-    sock.bind(('', 8080))
-    print("Using port 8080")
+if __name__ == "__main__":
+    while True:
+        conn, addr = server.accept()
+        print(addr)
+        request = conn.recv(REQUEST_SIZE).decode().split("\n")
+        # print(request)
 
-sock.listen(5)
+        method, url, protocol = request[0].split(" ")
+        url = os.path.join(WORKING_DIR, url[1:])
+        print(url)
 
-conn, addr = sock.accept()
-print("Connected", addr)
 
-data = conn.recv(8192)
-msg = data.decode()
 
-print(msg)
+        if os.path.isdir(url):
+            url = os.path.join(url, "index.htm")
 
-resp = """HTTP/1.1 200 OK
-Server: SelfMadeServer v0.0.1
-Content-type: text/html
-Connection: close
+        code, body = code_request(url)
 
-Hello, webworld!"""
+        response = f"HTTP/1.1 {code}\n"
+        response += "Server my_dummy_server\n"
+        response += "\n"
+        response += f"{body}"
+        conn.send(response.encode())
+        conn.close()
+        print("Connection closed")
 
-conn.send(resp.encode())
-
-conn.close()
+# while True:
+#
+#     conn, addr = server.accept()
+#     print("Connected", addr)
+#
+#     request = conn.recv(8192).decode().split('\n')
+#
+#     method, url, protocol = request[0].split(' ')
+#     print(url)
+#     url = os.path.join(WORKING_DIR, url[1:])
+#     print(url)
+#
+#     code = "404 Not Found"
+#     body = ""
+#     url = os.path.join(url, 'index.htm')
+#     if os.path.isfile(url):
+#         code = "200 OK"
+#         body = open(url, 'r').read()
+#         print(f"Body: {body}")
+#
+#     resp = f'HTTP/1.1 {code}\n'
+#     resp += "Server: my_dummy_server"
+#     resp += '\n\n'
+#     resp += body
+#     conn.send(resp.encode())
+#     conn.close()
+#     print('Connection closed\n')
