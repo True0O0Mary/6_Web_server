@@ -3,12 +3,13 @@ import os
 import threading
 from settings import PORT, WORKING_DIR, REQUEST_SIZE
 from check import code_request
+from datetime import datetime
 # WORKING_DIR = os.getcwd()
 # PORT = 80
 
 server = socket.socket()
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.bind(('', PORT))
+server.bind(('10.0.2.15', PORT))
 server.listen(5)
 
 if __name__ == "__main__":
@@ -29,8 +30,21 @@ if __name__ == "__main__":
 
         code, body = code_request(url)
 
+
+        # response = f'''HTTP/1.1 {code}\n
+        #             Server: SelfMadeServer v0.0.1
+        #             {datetime.now().strftime("Date: %a, %d %m %Y %H:%M:%S GMT")}
+        #             Content-type: text/html
+        #
+        #             {body}
+        #             '''
+
         response = f"HTTP/1.1 {code}\n"
-        response += "Server my_dummy_server\n"
+        response += "Server: my_dummy_server\n"
+        response += datetime.now().strftime("Date: %a, %d %m %Y %H:%M:%S GMT\n")
+        response += "Content-type: text/html\n"
+        response += f"Content-length: {REQUEST_SIZE}\n"
+        response += "Connection: close\n"
         response += "\n"
         response += f"{body}"
         conn.send(response.encode())
