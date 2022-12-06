@@ -1,15 +1,21 @@
 import os
 import re
-allowed_extensions = ["htm", "html", "css"]
+allowed_extensions = ["htm", "html", "css", "png", "jpg"]
 
 def code_request(url):
     body=""
-    if check_file_type(url):
+    content_type = "text/html"
+    extension = url.split(".")[-1]
+    if extension[-1]=="/" or extension in allowed_extensions:
         if os.path.exists(url):
-            body = open(url, "r").read()
-            return "200 OK", body
-        return "404 Not Found", body
-    return "403 Forbidden", body
+            if extension in ("png", "jpg"):
+                content_type = f"image/{extension}"
+                body = open(url, "rb").read()
+            else:
+                body = open(url, "r").read()
+            return "200 OK", body, content_type
+        return "404 Not Found", body, content_type
+    return "403 Forbidden", body, content_type
 
 
 def check_file_type(url):

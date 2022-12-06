@@ -1,0 +1,5 @@
+06/12/2022 17:27:27 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || None
+06/12/2022 17:28:12 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+06/12/2022 17:28:23 || 10.0.2.15 || /home/odinmary/6_Web_server/fold/innertest.htm || 200 OK
+06/12/2022 17:28:28 || 10.0.2.15 || /home/odinmary/6_Web_server/fold/index.htm || 200 OK
+06/12/2022 17:28:41 || 10.0.2.15 || /home/odinmary/6_Web_server/hi.jpg || 200 OK
