@@ -1,55 +1,61 @@
 import socket
 import os
 import threading
-from settings import PORT, WORKING_DIR, REQUEST_SIZE
+from settings import HOST, PORT, WORKING_DIR, REQUEST_SIZE
 from check import code_request
 from datetime import datetime
-# WORKING_DIR = os.getcwd()
-# PORT = 80
+import threading
 
-server = socket.socket()
-server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.bind(('10.0.2.15', PORT))
-server.listen(5)
+
+def handle_connection(sock, addr):  # New
+    with sock:
+        print("Connected by", addr)
+        while True:
+            try:
+                request = conn.recv(REQUEST_SIZE).decode().split("\n")
+            except ConnectionError:
+                print(f"Client suddenly closed while receiving")
+                break
+            if not request:
+                break
+
+            method, url, protocol = request[0].split(" ")
+            url = os.path.join(WORKING_DIR, url[1:])
+            print(url)
+
+            if os.path.isdir(url):
+                url = os.path.join(url, "index.htm")
+
+            code, body = code_request(url)
+
+            response = f"HTTP/1.1 {code}\n"
+            response += "Server: my_dummy_server\n"
+            response += datetime.now().strftime("Date: %a, %d %m %Y %H:%M:%S GMT\n")
+            response += "Content-type: text/html\n"
+            response += f"Content-length: {REQUEST_SIZE}\n"
+            response += "Connection: close\n"
+            response += "\n"
+            response += f"{body}"
+
+            try:
+                conn.send(response.encode())
+            except ConnectionError:
+                print(f"Client suddenly closed, cannot send")
+                break
+        print("Disconnected by", addr)
+
 
 if __name__ == "__main__":
-    while True:
-        conn, addr = server.accept()
-        print(addr)
-        request = conn.recv(REQUEST_SIZE).decode().split("\n")
-        # print(request)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server.bind((HOST, PORT))
+        server.listen(1)
+        while True:
+            print("Waiting for connection...")
+            conn, addr = server.accept()
+            t = threading.Thread(target=handle_connection, args=(conn, addr))  # New
+            t.start()
 
-        method, url, protocol = request[0].split(" ")
-        url = os.path.join(WORKING_DIR, url[1:])
-        print(url)
-
-
-
-        if os.path.isdir(url):
-            url = os.path.join(url, "index.htm")
-
-        code, body = code_request(url)
-
-
-        # response = f'''HTTP/1.1 {code}\n
-        #             Server: SelfMadeServer v0.0.1
-        #             {datetime.now().strftime("Date: %a, %d %m %Y %H:%M:%S GMT")}
-        #             Content-type: text/html
-        #
-        #             {body}
-        #             '''
-
-        response = f"HTTP/1.1 {code}\n"
-        response += "Server: my_dummy_server\n"
-        response += datetime.now().strftime("Date: %a, %d %m %Y %H:%M:%S GMT\n")
-        response += "Content-type: text/html\n"
-        response += f"Content-length: {REQUEST_SIZE}\n"
-        response += "Connection: close\n"
-        response += "\n"
-        response += f"{body}"
-        conn.send(response.encode())
-        conn.close()
-        print("Connection closed")
 
 # while True:
 #
