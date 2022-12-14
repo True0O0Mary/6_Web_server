@@ -3,3 +3,13 @@
 06/12/2022 17:28:23 || 10.0.2.15 || /home/odinmary/6_Web_server/fold/innertest.htm || 200 OK
 06/12/2022 17:28:28 || 10.0.2.15 || /home/odinmary/6_Web_server/fold/index.htm || 200 OK
 06/12/2022 17:28:41 || 10.0.2.15 || /home/odinmary/6_Web_server/hi.jpg || 200 OK
+07/12/2022 12:13:33 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+07/12/2022 12:15:59 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+07/12/2022 14:25:13 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+07/12/2022 14:25:18 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+07/12/2022 14:25:20 || 10.0.2.15 || /home/odinmary/6_Web_server/fold/innertest.htm || 200 OK
+12/12/2022 19:42:18 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+12/12/2022 19:42:20 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+14/12/2022 11:42:25 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
+14/12/2022 11:42:28 || 10.0.2.15 || /home/odinmary/6_Web_server/fold/innertest.htm || 200 OK
+14/12/2022 11:42:29 || 10.0.2.15 || /home/odinmary/6_Web_server/index.htm || 200 OK
